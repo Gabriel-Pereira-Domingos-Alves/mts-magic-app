@@ -54,8 +54,8 @@ export const CardComponent: React.FC<CardProps> = ({ card, onPress }) => {
         elements.push(<Text key={`text-${position}`} style={{ fontSize: 14, color: 'white' }}>{oracleText.substring(position, offset)}</Text>);
       }
 
-      const formattedSymbol = symbol.replace('/', ''); // Substitui '/' por ''
-      console.log(formattedSymbol)
+      const formattedSymbol = symbol.replace('/', '');
+
       const iconUrl = `https://svgs.scryfall.io/card-symbols/${formattedSymbol}.svg`;
       elements.push(
         <SvgUri
