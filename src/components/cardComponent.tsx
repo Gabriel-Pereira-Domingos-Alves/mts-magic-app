@@ -32,7 +32,7 @@ export const CardComponent: React.FC<CardProps> = ({ card, onPress }) => {
     const manaSymbols = manaCost.match(/\{[^}]+\}/g) || [];
     return manaSymbols.map((symbol, index) => {
       const cleanSymbol = symbol.replace(/[{}]/g, "") // Remove chaves e converte para minúsculas
-      const cleanSymbols = cleanSymbol.replace('/', ''); // Substitui '/' por ''
+      const cleanSymbols = cleanSymbol.replace(/\//g, '') // Substitui '/' por ''
       const imageUrl = `https://svgs.scryfall.io/card-symbols/${cleanSymbols}.svg`;
       return (
         <SvgUri
@@ -54,7 +54,7 @@ export const CardComponent: React.FC<CardProps> = ({ card, onPress }) => {
         elements.push(<Text key={`text-${position}`} style={{ fontSize: 14, color: 'white' }}>{oracleText.substring(position, offset)}</Text>);
       }
 
-      const formattedSymbol = symbol.replace('/', '');
+      const formattedSymbol = symbol.replace(/\//g, '');
 
       const iconUrl = `https://svgs.scryfall.io/card-symbols/${formattedSymbol}.svg`;
       elements.push(

@@ -5,6 +5,7 @@ import styles from '@/styles/searchCard.styles';
 import { fetchCardByName, fetchCardDetails } from '@/api/searchCard';
 import { CardComponent } from '@/components/cardComponent';
 import { StackNavigationProp } from '@react-navigation/stack';
+import CardDetailsModal from '@/components/modalComponent';
 
 type RootStackParamList = {
   SearchScreen: undefined;
@@ -56,15 +57,12 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
   };
 
   const handleCardPress = async (card: Card) => {
-    setLoading(true);
     try {
       const details = await fetchCardDetails(card.name);
       setSelectedCardDetails(details);
       setModalVisible(true);
     } catch (error) {
       console.error('Error fetching card details:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -86,7 +84,9 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       {loading ? (
-        <ActivityIndicator style={styles.loading} size="large" color="#0000ff" />
+          <View style={styles.loadingOverlay}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
       ) : (
         <FlatList
           data={cards}
@@ -96,34 +96,11 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
         />
       )}
       {modalVisible && selectedCardDetails && (
-        <Modal
-          animationType="slide"
-          transparent={false}
+        <CardDetailsModal
+          cardDetails={selectedCardDetails}
           visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <ScrollView style={styles.modalContent}>
-            <TouchableOpacity onPress={() => setModalVisible(false)}>
-              <AntDesign name="closecircle" size={24} color="red" />
-            </TouchableOpacity>
-            <Image source={{ uri: selectedCardDetails.imageUrl }} style={styles.cardImage} />
-            <Text style={styles.modalText}>{selectedCardDetails.name}</Text>
-            <Text style={styles.modalText}>{selectedCardDetails.manaCost}</Text>
-            <Text style={styles.modalText}>{selectedCardDetails.typeLine}</Text>
-            <Text style={styles.modalText}>{selectedCardDetails.oracleText}</Text>
-            {selectedCardDetails.synergy && selectedCardDetails.synergy.map((synergy, index) => (
-              <View key={index}>
-                <Text style={styles.modalText}>Feature: {synergy.comboName}</Text>
-                <View style={styles.comboImages}>
-                  {synergy.cards.map((card, idx) => (
-                    <Image key={idx} source={{ uri: card.imageUrl }} style={styles.comboImage} />
-                  ))}
-                </View>
-                <Text style={styles.modalText}>{synergy.description}</Text>
-              </View>
-            ))}
-          </ScrollView>
-        </Modal>
+          onClose={() => setModalVisible(false)}
+        />
       )}
     </SafeAreaView>
   );

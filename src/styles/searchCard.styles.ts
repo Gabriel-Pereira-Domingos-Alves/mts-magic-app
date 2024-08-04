@@ -31,6 +31,17 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  loadingOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Cor semi-transparente
+    alignItems: 'center', // Centraliza horizontalmente
+    justifyContent: 'center', // Centraliza verticalmente
+    zIndex: 1, // Garante que o overlay esteja sobre outros elementos da tela
+  },
   list: {
     flex: 1
   },
