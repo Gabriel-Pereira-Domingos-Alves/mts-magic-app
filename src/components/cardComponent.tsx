@@ -1,4 +1,5 @@
 import React from 'react';
+import { SvgUri } from 'react-native-svg';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 interface CardProps {
@@ -26,15 +27,67 @@ interface Synergy {
 }
 
 export const CardComponent: React.FC<CardProps> = ({ card, onPress }) => {
+
+  const parseManaCost = (manaCost: string) => {
+    const manaSymbols = manaCost.match(/\{[^}]+\}/g) || [];
+    return manaSymbols.map((symbol, index) => {
+      const cleanSymbol = symbol.replace(/[{}]/g, "") // Remove chaves e converte para minúsculas
+      const cleanSymbols = cleanSymbol.replace('/', ''); // Substitui '/' por ''
+      const imageUrl = `https://svgs.scryfall.io/card-symbols/${cleanSymbols}.svg`;
+      return (
+        <SvgUri
+          key={index}
+          uri={imageUrl}
+          width="15"
+          height="15"
+        />
+      )
+    });
+  };  
+  
+  const parseOracleText = (oracleText: string): React.ReactNode => {
+    const elements: Array<React.ReactNode> = [];
+    let position = 0;
+  
+    oracleText.replace(/\{([^}]+)\}/g, (match: string, symbol: string, offset: number): string => {
+      if (offset > position) {
+        elements.push(<Text key={`text-${position}`} style={{ fontSize: 14, color: 'white' }}>{oracleText.substring(position, offset)}</Text>);
+      }
+
+      const formattedSymbol = symbol.replace('/', ''); // Substitui '/' por ''
+      console.log(formattedSymbol)
+      const iconUrl = `https://svgs.scryfall.io/card-symbols/${formattedSymbol}.svg`;
+      elements.push(
+        <SvgUri
+          key={`mana-${offset}`}
+          uri={iconUrl}
+          width="12"
+          height="12"
+          style={{ alignSelf: 'center' }}
+        />
+      );
+      position = offset + match.length;
+      return match;
+    });
+  
+    if (position < oracleText.length) {
+      elements.push(<Text key={`last-text-${position}`} style={{ fontSize: 14, color: 'white' }}>{oracleText.substring(position)}</Text>);
+    }
+  
+    return <Text>{elements}</Text>;
+  };
+
   return (
     <TouchableOpacity onPress={() => onPress(card)}>
       <View style={styles.cardContainer}>
         <Image source={{ uri: card.imageUrl }} style={styles.image} resizeMode="cover" />
         <View style={styles.cardDetails}>
           <Text style={styles.title}>{card.name}</Text>
-          <Text style={styles.manaCost}>{card.manaCost}</Text>
+          <View style={styles.manaCost}>
+            {parseManaCost(card.manaCost)}
+          </View>
           <Text style={styles.typeLine}>{card.typeLine}</Text>
-          <Text style={styles.oracleText}>{card.oracleText}</Text>
+          <View style={styles.oracleText}>{parseOracleText(card.oracleText)}</View>
         </View>
       </View>
     </TouchableOpacity>
@@ -56,7 +109,7 @@ const styles = StyleSheet.create({
     height: 140
   },
   cardDetails: {
-    padding: 10,
+    padding: 15,
     flex: 1,
   },
   title: {
@@ -65,14 +118,21 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   manaCost: {
-    fontSize: 14
+    flexDirection: 'row', 
+    marginTop: 5, 
+    paddingBottom: 5,
   },
   typeLine: {
     fontSize: 14,
     color: 'white'
   },
   oracleText: {
-    fontSize: 12,
-    color: 'white'
+    fontSize: 14,
+    color: 'white',
+    flexDirection: 'row',
+    lineHeight: 22,
+  },
+  manaSymbol: {
+    marginHorizontal: 2 // Ajusta o espaçamento entre os símbolos de mana
   }
 });

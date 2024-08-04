@@ -86,7 +86,7 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator style={styles.loading} size="large" color="#0000ff" />
       ) : (
         <FlatList
           data={cards}

@@ -37,8 +37,6 @@ interface Card {
         typeLine: card.type_line || 'No type available'
       }));
   
-      console.log("First card found:", cards[0]);
-  
       return cards;
   
     } catch (error) {

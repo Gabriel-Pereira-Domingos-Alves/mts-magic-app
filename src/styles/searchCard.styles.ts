@@ -26,6 +26,11 @@ export default StyleSheet.create({
     borderColor: 'white',
     color: 'white' 
   },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   list: {
     flex: 1
   },
