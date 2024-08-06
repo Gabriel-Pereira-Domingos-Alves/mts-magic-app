@@ -1,11 +1,22 @@
-import React, { useState } from 'react';
-import { Modal, SafeAreaView, View, FlatList, TextInput, TouchableOpacity, Text, ActivityIndicator, ScrollView, Image } from 'react-native';
-import { Ionicons, AntDesign } from '@expo/vector-icons';
-import styles from '@/styles/searchCard.styles';
-import { fetchCardByName, fetchCardDetails } from '@/api/searchCard';
-import { CardComponent } from '@/components/cardComponent';
-import { StackNavigationProp } from '@react-navigation/stack';
-import CardDetailsModal from '@/components/modalComponent';
+import React, { useState } from "react";
+import {
+  Modal,
+  SafeAreaView,
+  View,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  ActivityIndicator,
+  ScrollView,
+  Image,
+} from "react-native";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
+import styles from "@/styles/searchCard.styles";
+import { fetchCardByName, fetchCardDetails } from "@/api/searchCard";
+import { CardComponent } from "@/components/cardComponent";
+import { StackNavigationProp } from "@react-navigation/stack";
+import CardDetailsModal from "@/components/modalComponent";
 
 type RootStackParamList = {
   SearchScreen: undefined;
@@ -13,36 +24,39 @@ type RootStackParamList = {
 };
 
 type SearchScreenProps = {
-  navigation: StackNavigationProp<RootStackParamList, 'SearchScreen'>;
+  navigation: StackNavigationProp<RootStackParamList, "SearchScreen">;
 };
 
 interface ComboCard {
-    name: string;
-    imageUrl: string;
-  }
-  
-  interface Synergy {
-    comboName: string;
-    description: string;
-    cards: ComboCard[];
-  }
-  
-  interface Card {
-    name: string;
-    imageUrl: string;
-    manaCost: string;
-    oracleText: string;
-    typeLine: string;
-    id: string;
-    synergy?: Synergy[]; // Faça o campo synergy opcional se ele só estiver disponível após detalhes específicos serem buscados
-  }
+  name: string;
+  imageUrl: string;
+}
+
+interface Synergy {
+  comboName: string;
+  description: string;
+  cards: ComboCard[];
+}
+
+interface Card {
+  name: string;
+  imageUrl: string;
+  manaCost: string;
+  oracleText: string;
+  typeLine: string;
+  id: string;
+  synergy?: Synergy[]; // Faça o campo synergy opcional se ele só estiver disponível após detalhes específicos serem buscados
+}
 
 const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
   const [cards, setCards] = useState<Card[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedCardDetails, setSelectedCardDetails] = useState<Card | null>(null);
+  const [displayLimit, setDisplayLimit] = useState(8);
+  const [selectedCardDetails, setSelectedCardDetails] = useState<Card | null>(
+    null,
+  );
 
   const handleSearchSubmit = async () => {
     setLoading(true);
@@ -51,10 +65,14 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
       setCards(fetchedCards);
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching cards:', error);
+      console.error("Error fetching cards:", error);
       setLoading(false);
     }
   };
+
+  const handleLoadMore = () => {
+    setDisplayLimit(prevLimit => prevLimit + 8)
+  }
 
   const handleCardPress = async (card: Card) => {
     try {
@@ -62,46 +80,58 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
       setSelectedCardDetails(details);
       setModalVisible(true);
     } catch (error) {
-      console.error('Error fetching card details:', error);
+      console.error("Error fetching card details:", error);
     }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-        <AntDesign name="leftcircle" size={24} color="white" />
-      </TouchableOpacity>
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search for a card"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          onSubmitEditing={handleSearchSubmit}
-        />
-        <TouchableOpacity onPress={handleSearchSubmit}>
-          <Ionicons name="search" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
-      {loading ? (
+    <SafeAreaView style={styles.safeAreaContainer}>
+      <View style={styles.someContent}>
+        <View style={styles.searchContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate("Home")} style={styles.backButton}>
+            <AntDesign name="leftcircle" style={styles.backButtonIcon}  />
+          </TouchableOpacity>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search for a card"
+            placeholderTextColor={"gray"}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            onSubmitEditing={handleSearchSubmit}
+          />
+
+        </View>
+        {loading ? (
           <View style={styles.loadingOverlay}>
             <ActivityIndicator size="large" color="#0000ff" />
           </View>
-      ) : (
-        <FlatList
-          data={cards}
-          keyExtractor={(item) => item.id ? item.id.toString() : Math.random().toString()}
-          renderItem={({ item }) => <CardComponent card={item} onPress={() => handleCardPress(item)} />}
-          style={styles.list}
-        />
-      )}
-      {modalVisible && selectedCardDetails && (
-        <CardDetailsModal
-          cardDetails={selectedCardDetails}
-          visible={modalVisible}
-          onClose={() => setModalVisible(false)}
-        />
-      )}
+        ) : (
+          <FlatList
+            data={cards.slice(0, displayLimit)}
+            keyExtractor={(item) =>
+              item.id ? item.id.toString() : Math.random().toString()
+            }
+            renderItem={({ item }) => (
+              <CardComponent card={item} onPress={() => handleCardPress(item)} />
+            )}
+            style={styles.list}
+            ListFooterComponent={() => (
+              cards.length > displayLimit && (
+                <TouchableOpacity onPress={handleLoadMore} style={styles.loadMoreButton}>
+                  <Text style={styles.loadMoreButtonText}>Mostrar mais</Text>
+                </TouchableOpacity>
+              )
+            )}
+          />
+        )}
+        {modalVisible && selectedCardDetails && (
+          <CardDetailsModal
+            cardDetails={selectedCardDetails}
+            visible={modalVisible}
+            onClose={() => setModalVisible(false)}
+          />
+        )}
+      </View>
     </SafeAreaView>
   );
 };

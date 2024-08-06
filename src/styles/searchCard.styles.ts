@@ -1,113 +1,77 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-  container: {
+  safeAreaContainer: {
     flex: 1,
-    paddingTop: 50,
+    backgroundColor: "#1B1B1B",
+    borderBottomLeftRadius: 10,
+  },
+  someContent: {
+    flex: 1,
+    paddingTop: 10,
     paddingHorizontal: 10,
-    backgroundColor: '#0F0F0F'
+    backgroundColor: "#1B1B1B",
   },
   searchContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
-    backgroundColor: '#2F2F2F',
-    borderColor: '#2F2F2F',
+    backgroundColor: "#1B1B1B",
+    borderColor: "#1B1B1B",
     borderRadius: 5,
     borderWidth: 8,
   },
+  backButton: {
+    padding: 8,  // Adiciona espaço em volta para tornar mais fácil tocar no botão
+    marginLeft: 2, // Adiciona uma margem à esquerda para distanciá-lo do lado da tela
+  },
+  backButtonIcon: {
+    color: 'white', // Define a cor do ícone
+    fontSize: 30,   // Define o tamanho do ícone
+  },
   searchInput: {
     flex: 1,
-    height: 40,
+    height: 50,
     borderWidth: 1,
     marginRight: 10,
     paddingHorizontal: 10,
-    borderRadius: 15,
-    backgroundColor: '#2F2F2F',
-    borderColor: 'white',
-    color: 'white' 
+    paddingLeft: 20,
+    borderRadius: 25,
+    backgroundColor: "#2F2F2F",
+    borderColor: "white",
+    color: "white",
+    fontSize: 15,
   },
   loading: {
     flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadMoreButton: {
+    padding: 10,
+    backgroundColor: '#2F2F2F',
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center'
+    borderRadius: 5,
+    margin: 10
+  },
+  loadMoreButtonText: {
+    color: 'white',
+    fontSize: 16
   },
   loadingOverlay: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     top: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Cor semi-transparente
-    alignItems: 'center', // Centraliza horizontalmente
-    justifyContent: 'center', // Centraliza verticalmente
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Cor semi-transparente
+    alignItems: "center", // Centraliza horizontalmente
+    justifyContent: "center", // Centraliza verticalmente
     zIndex: 1, // Garante que o overlay esteja sobre outros elementos da tela
   },
   list: {
-    flex: 1
-  },
-  modalContent: {
     flex: 1,
-    backgroundColor: '#0F0F0F',
-    paddingTop: 20,
-  },
-  cardImage: {
-    width: '100%',
-    height: 300,
-    resizeMode: 'contain',
-    marginTop: 10,
-  },
-  modalText: {
-    color: 'white',
-    fontSize: 18,
-    padding: 10
-  },
-  closeButton: {
-    position: 'relative',
-    top: 20,
-    right: 20,
-    backgroundColor: 'red',
-    padding: 10,
-    borderRadius: 20,
-  },
-  detailsContainer: {
-    padding: 20
-  },
-  detailsHeader: {
-    fontSize: 24,
-    color: 'white',
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  detailsText: {
-    fontSize: 16,
-    color: 'white',
-    lineHeight: 22,
-    marginBottom: 10,
-  },
-  synergyContainer: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#333333',
-    borderRadius: 10,
-  },
-  synergyTitle: {
-    fontSize: 18,
-    color: '#FFD700',  // Gold color for the title
-    marginBottom: 5,
-  },
-  synergyText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  comboImages: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginVertical: 10,
-  },
-  comboImage: {
-    width: 60,
-    height: 80,
-    margin: 5,
+    borderRadius: 15
   },
 });

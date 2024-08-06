@@ -10,7 +10,7 @@ interface CardProps {
     oracleText: string;
     typeLine: string;
     id: string;
-    synergy?: Synergy[]; 
+    synergy?: Synergy[];
   };
   onPress: (card: CardProps['card']) => void;
 }
@@ -43,12 +43,12 @@ export const CardComponent: React.FC<CardProps> = ({ card, onPress }) => {
         />
       )
     });
-  };  
-  
+  };
+
   const parseOracleText = (oracleText: string): React.ReactNode => {
     const elements: Array<React.ReactNode> = [];
     let position = 0;
-  
+
     oracleText.replace(/\{([^}]+)\}/g, (match: string, symbol: string, offset: number): string => {
       if (offset > position) {
         elements.push(<Text key={`text-${position}`} style={{ fontSize: 14, color: 'white' }}>{oracleText.substring(position, offset)}</Text>);
@@ -69,11 +69,11 @@ export const CardComponent: React.FC<CardProps> = ({ card, onPress }) => {
       position = offset + match.length;
       return match;
     });
-  
+
     if (position < oracleText.length) {
       elements.push(<Text key={`last-text-${position}`} style={{ fontSize: 14, color: 'white' }}>{oracleText.substring(position)}</Text>);
     }
-  
+
     return <Text>{elements}</Text>;
   };
 
@@ -105,8 +105,11 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   image: {
-    width: 100,
-    height: 140
+    width: 110,
+    height: 160,
+    marginLeft: 7,
+    marginBottom: 7,
+    marginTop: 7,
   },
   cardDetails: {
     padding: 15,
@@ -118,14 +121,16 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   manaCost: {
-    flexDirection: 'row', 
-    marginTop: 5, 
+    flexDirection: 'row',
+    marginTop: 5,
     paddingBottom: 5,
   },
   typeLine: {
-    fontSize: 14,
-    color: 'white'
+    fontSize: 15,
+    color: 'white',
+    paddingBottom: 5
   },
+
   oracleText: {
     fontSize: 14,
     color: 'white',
