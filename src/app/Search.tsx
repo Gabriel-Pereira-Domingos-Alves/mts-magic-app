@@ -17,6 +17,7 @@ import { fetchCardByName, fetchCardDetails } from "@/api/searchCard";
 import { CardComponent } from "@/components/cardComponent";
 import { StackNavigationProp } from "@react-navigation/stack";
 import CardDetailsModal from "@/components/modalComponent";
+import FilterModal from "@/components/FilterModal";
 
 type RootStackParamList = {
   SearchScreen: undefined;
@@ -54,9 +55,8 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [displayLimit, setDisplayLimit] = useState(8);
-  const [selectedCardDetails, setSelectedCardDetails] = useState<Card | null>(
-    null,
-  );
+  const [selectedCardDetails, setSelectedCardDetails] = useState<Card | null>(null,);
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
 
   const handleSearchSubmit = async () => {
     setLoading(true);
@@ -69,6 +69,10 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
       setLoading(false);
     }
   };
+  
+  const applyFilters = (filters: any) => {
+    setFilterModalVisible(false);
+  }
 
   const handleLoadMore = () => {
     setDisplayLimit(prevLimit => prevLimit + 8)
@@ -99,7 +103,14 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
             onChangeText={setSearchQuery}
             onSubmitEditing={handleSearchSubmit}
           />
-
+          <TouchableOpacity onPress={() => setFilterModalVisible(true)}>
+            <Ionicons name="filter" style={styles.filterIcon}/>
+          </TouchableOpacity>
+          <FilterModal
+            isVisible={filterModalVisible}
+            onClose={() => setFilterModalVisible(false)}
+            applyFilters={applyFilters}
+          />
         </View>
         {loading ? (
           <View style={styles.loadingOverlay}>

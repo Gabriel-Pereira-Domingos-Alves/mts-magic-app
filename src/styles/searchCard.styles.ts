@@ -42,6 +42,10 @@ export default StyleSheet.create({
     color: "white",
     fontSize: 15,
   },
+  filterIcon: {
+    color: 'white',
+    fontSize: 25,
+  },
   loading: {
     flex: 1,
     justifyContent: "center",
