@@ -4,14 +4,16 @@ import { View, Text, StyleSheet, ViewStyle } from 'react-native';
 import PlayerHud_Center from './player_hud_Center';
 
 interface PlayerHudProps {
+  commanderMode: string;
   index: number;
   health: number;
   flex: number;
   rotation: string;
   color: string;
+  commanderAction: (index: number) => void;
 }
 
-const PlayerHud_H: React.FC<PlayerHudProps> = ({ index, health, flex, rotation, color }) => {
+const PlayerHud_H: React.FC<PlayerHudProps> = ({ commanderMode, index, health, flex, rotation, color, commanderAction }) => {
   const containerStyle: ViewStyle = {
     flex: flex,
     transform: [{ rotate: `${rotation}deg` }],
@@ -24,7 +26,7 @@ const PlayerHud_H: React.FC<PlayerHudProps> = ({ index, health, flex, rotation, 
 
   return (
     <View style={containerStyle}>
-      <PlayerHud_Center index={index} initialHealth={health}  />
+      <PlayerHud_Center commanderMode={commanderMode} index={index} initialHealth={health} commanderAction={commanderAction} />
     </View>
   );
 };
