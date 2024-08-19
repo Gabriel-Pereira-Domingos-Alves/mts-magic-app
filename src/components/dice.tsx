@@ -40,12 +40,14 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
+    pointerEvents: "none",
   },
   dice: {
     width: remToPixels(6), // 10rem de largura
     height: remToPixels(6), // 10rem de altura
     justifyContent: 'center',
     alignItems: 'center',
+    pointerEvents:"auto",
   },
   numberText: {
     fontSize: remToPixels(1),

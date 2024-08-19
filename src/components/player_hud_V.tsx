@@ -8,10 +8,9 @@ interface PlayerHudProps {
   health: number;
   rotation: string;
   color: string;
-  commanderAction: (index: number) => void;
 }
 
-const PlayerHud_V: React.FC<PlayerHudProps> = ({ index, health, rotation, color, commanderAction }) => {
+const PlayerHud_V: React.FC<PlayerHudProps> = ({index, health, rotation, color }) => {
 
   const containerStyle: ViewStyle = {
     flex: 1,
@@ -34,7 +33,7 @@ const PlayerHud_V: React.FC<PlayerHudProps> = ({ index, health, rotation, color,
   return (
     <View style={containerStyle}>
       <View style={insideViewStyle}>
-        <PlayerHud_Center index={index} initialHealth={health} commanderAction={commanderAction}/>
+        <PlayerHud_Center index={index} initialHealth={health}/>
       </View>
     </View>
   );

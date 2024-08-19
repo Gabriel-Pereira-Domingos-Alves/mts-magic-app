@@ -9,6 +9,7 @@ import { RootStackParamList } from '../../App';
 import Dice from '@/components/dice';
 import PauseButton from '@/components/Pause/pauseButton';
 import PauseScreen from '@/components/Pause/pauseScreen';
+import { CommanderProvider } from '@/components/commanderContext';
 
 type GameProps = {
     route: RouteProp<RootStackParamList, 'Game'>;
@@ -19,27 +20,7 @@ const Game: React.FC<GameProps> = ({ route, navigation }) => {
   const { playerAmmount, health } = route.params;
   const colors = ['#ff9999', '#99ccff', '#99ff99', '#ffff99'];
   const [isPaused, setIsPaused] = useState(false);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [commanderMode, setCommanderMode] = useState(false);
 
-  const commanderAction = (index: number) => {
-    if(commanderMode){
-      setCommanderMode(false);
-    } else{
-      setActiveIndex(index);
-      setCommanderMode(true);
-    }
-  }
-
-  const chooseCommandeState = (index: number) => {
-    if(commanderMode && activeIndex === index){
-      return "take-damage";
-    } else if(commanderMode && activeIndex !== index) {
-      return "deal-damage";
-    } else{
-      return "nil";
-    }
-  }
   const handlePause = () => {
     setIsPaused(true);
   };
@@ -56,30 +37,30 @@ const Game: React.FC<GameProps> = ({ route, navigation }) => {
     if (playerAmmount === 2) {
       return (
         <>
-        <PlayerHud_H commanderMode={chooseCommandeState(2)} index={2} health={health} flex={1} rotation='180' color={colors[0]} commanderAction={commanderAction} />
-        <PlayerHud_H commanderMode={chooseCommandeState(1)} index={1} health={health} flex={1} rotation='0' color={colors[1]} commanderAction={commanderAction}/>
+        <PlayerHud_H index={2} health={health} flex={1} color={colors[0]}/>
+        <PlayerHud_H index={1} health={health} flex={1} color={colors[1]}/>
       </>
       );
      } else if (playerAmmount === 3) {
       return (
         <>
           <View style={[styles.row, {flex: 1}]}>
-            <PlayerHud_V key={3} index={3} health={health} rotation='90' color={colors[0]} commanderAction={commanderAction}/>
-            <PlayerHud_V key={2} index={2} health={health} rotation='-90' color={colors[1]} commanderAction={commanderAction}/>
+            <PlayerHud_V key={3} index={3} health={health} rotation='90' color={colors[0]}/>
+            <PlayerHud_V key={2} index={2} health={health} rotation='-90' color={colors[1]}/>
           </View>
-        <PlayerHud_H commanderMode={chooseCommandeState(1)} key={1} index={1} health={health} flex={1} rotation='0' color={colors[2]} commanderAction={commanderAction}/>
+        <PlayerHud_H key={1} index={1} health={health} flex={1} color={colors[2]}/>
         </>
       );
     } else if (playerAmmount === 4) {
       return (
         <>
             <View style={[styles.row, {flex: 1}]}>
-                <PlayerHud_V key={4} index={4} health={health} rotation='90' color={colors[0]} commanderAction={commanderAction}/>
-                <PlayerHud_V key={3} index={3} health={health} rotation='-90' color={colors[1]} commanderAction={commanderAction}/>
+                <PlayerHud_V key={4} index={4} health={health} rotation='90' color={colors[0]}/>
+                <PlayerHud_V key={3} index={3} health={health} rotation='-90' color={colors[1]}/>
             </View>
             <View style={[styles.row, {flex: 1}]}>
-                <PlayerHud_V key={2} index={2} health={health} rotation='90' color={colors[2]} commanderAction={commanderAction}/>
-                <PlayerHud_V key={1} index={1} health={health} rotation='-90' color={colors[3]} commanderAction={commanderAction}/>
+                <PlayerHud_V key={2} index={2} health={health} rotation='90' color={colors[2]}/>
+                <PlayerHud_V key={1} index={1} health={health} rotation='-90' color={colors[3]}/>
             </View>
         </>
       );
@@ -91,7 +72,9 @@ const Game: React.FC<GameProps> = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      {renderHuds()}
+      <CommanderProvider>
+        {renderHuds()}
+      </CommanderProvider>
       <Dice />
       <PauseButton onPause={handlePause} />
       {isPaused && <PauseScreen onResume={handleResume} onReturn={returnToMenu}/>}
