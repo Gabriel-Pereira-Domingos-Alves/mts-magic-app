@@ -6,11 +6,13 @@ import { useCommander } from "./commanderContext";
 interface PlayerHudProps {
   index: number;
   initialHealth: number;
+  rotation: string;
 }
 
 const PlayerHud_Center: React.FC<PlayerHudProps> = ({
   index,
   initialHealth,
+  rotation
 }) => {
   const {
     sendEvent,
@@ -24,6 +26,7 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
   } = useCommander();
   const [health, setHealth] = useState(initialHealth); // define a vida base do player
   const [shownHealth, setShownHealth] = useState(initialHealth); // define a vida do player calculada com ajustes, poison e commander damage
+  const [poisonMode, setPoisonMode] = useState(false);
   const [poisonDamage, setPoisonDamage] = useState(0); // define o quanto de dano poison este player recebeu
   const [commanderDamage, setCommanderDamage] = useState(0); // define o quanto de dano commander este player recebeu
   const [commander, setCommander] = useState(false); // define se este player é o commander
@@ -35,25 +38,31 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
     onEvent("start-commander", (triggeredIndex: number) => {
       if (triggeredIndex !== index) {
         setCommanderMode("deal-damage");
-        const existingDamage = commanderActionDamage.find(
-          (entry) => entry.sourceId === index && entry.targetId === triggeredIndex
-        )?.damage || 0;
+        const existingDamage =
+          commanderActionDamage.find(
+            (entry) =>
+              entry.sourceId === index && entry.targetId === triggeredIndex
+          )?.damage || 0;
 
-        const existing = commanderActionDamage.find(
-          (entry) => entry.sourceId === index && entry.targetId === triggeredIndex
-        )?.damage || 'nao encontrado';
-        console.log('EXISTING:', existing, ' meu INDEX é ', index);
-        
-        if(existingDamage !== 0 || (existingDamage === 0 && triggeredIndex !== lastCommanderIndex)) {
-          console.log('Updating current damage: ', existingDamage);
-          
+        const existing =
+          commanderActionDamage.find(
+            (entry) =>
+              entry.sourceId === index && entry.targetId === triggeredIndex
+          )?.damage || "nao encontrado";
+        console.log("EXISTING:", existing, " meu INDEX é ", index);
+
+        if (
+          existingDamage !== 0 ||
+          (existingDamage === 0 && triggeredIndex !== lastCommanderIndex)
+        ) {
+          console.log("Updating current damage: ", existingDamage);
+
           setCurrentCommanderDamage(existingDamage);
         }
-        
+
         setLastCommanderIndex(triggeredIndex);
         // console.log(`I AM INDEX ${index} AND I SHOULD DAMAGE ${triggeredIndex}`);
         // console.log('current commander damage: ', existingDamage);
-
       } else {
         setCommanderMode("take-damage");
       }
@@ -63,16 +72,23 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
       startProcessing();
       setCommanderMode("nil");
       if (triggeredIndex !== index) {
-        updateCommanderActionDamage(index, triggeredIndex, currentCommanderDamage);
-        console.log('updating commander damage: ',currentCommanderDamage);
+        updateCommanderActionDamage(
+          index,
+          triggeredIndex,
+          currentCommanderDamage
+        );
+        console.log("updating commander damage: ", currentCommanderDamage);
       }
       finishProcessing();
     });
-  }, [index, commanderActionDamage, currentCommanderDamage, lastCommanderIndex]);
+  }, [
+    index,
+    commanderActionDamage,
+    currentCommanderDamage,
+    lastCommanderIndex,
+  ]);
 
   useEffect(() => {
-    console.log(processingCount);
-    console.log(commander);
     if (commander && processingCount === 0) {
       setCommander(false);
       const totalDamage = commanderActionDamage
@@ -87,10 +103,6 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
 
   useEffect(() => {
     setShownHealth(health - commanderDamage - poisonDamage);
-    console.log(
-      "Updating health to: ",
-      health - commanderDamage - poisonDamage
-    );
   }, [commanderDamage, poisonDamage]);
 
   const handleCommander = () => {
@@ -100,6 +112,10 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
       setCommander(true);
       sendEvent("start-commander", index);
     }
+  };
+
+  const handlePoison = () => {
+    setPoisonMode(!poisonMode);
   };
 
   const decrementHealth = () => {
@@ -113,12 +129,15 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
   };
   const handleCommanderDamage = (value: number) => {
     setCurrentCommanderDamage(currentCommanderDamage + value);
+  };
+  const handlePoisonDamage = (value: number) => {
+    setPoisonDamage(poisonDamage + value);
   }
 
   const renderCommanderWrapper = () => {
     const flexViewContent = (
       <>
-        <View style={styles.flexView}>
+        <View style={styles.addDamageView}>
           <TouchableOpacity style={styles.button} onPress={decrementHealth}>
             <Text style={styles.text}>-</Text>
           </TouchableOpacity>
@@ -127,23 +146,25 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
             <Text style={styles.text}>+</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.flexView}>
+        <View style={styles.addDamageView}>
           <TouchableOpacity style={styles.button} onPress={handleCommander}>
             <Image
               source={require("../../assets/images/shield.png")}
               style={styles.image}
             />
           </TouchableOpacity>
-          <Image
-            source={require("../../assets/images/rune.png")}
-            style={styles.image}
-          />
+          <TouchableOpacity onPress={handlePoison}>
+            <Image
+              source={require("../../assets/images/rune.png")}
+              style={styles.image}
+            />
+          </TouchableOpacity>
         </View>
       </>
     );
     const dealDamageContent = (
       <>
-        <View style={styles.flexView}>
+        <View style={styles.addDamageView}>
           <TouchableOpacity
             style={styles.button}
             onPress={() => handleCommanderDamage(-1)}
@@ -158,7 +179,7 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
             <Text style={styles.text}>+</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.flexView}>
+        <View style={styles.addDamageView}>
           <Image
             source={require("../../assets/images/shield.png")}
             style={styles.image}
@@ -187,11 +208,43 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
         </View>
       </>
     );
+    const poisonView = (
+      <>
+      <View style={styles.topXView}>
+        <TouchableOpacity onPress={handlePoison}>
+          <Image style={styles.tinyImg} source={require("../../assets/images/Red_X.png")}></Image>
+        </TouchableOpacity>
+      </View>
+        <View style={styles.poisonView}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handlePoisonDamage(-1)}
+          >
+            <Text style={styles.text}>-</Text>
+          </TouchableOpacity>
+          <Text style={styles.text}>{poisonDamage}</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handlePoisonDamage(1)}
+          >
+            <Text style={styles.text}>+</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.flexView}>
+          <Image
+            source={require("../../assets/images/rune.png")}
+            style={styles.image}
+          />
+        </View>
+      </>
+    );
 
     if (commanderMode === "deal-damage") {
       return <View style={styles.dealDamageView}>{dealDamageContent}</View>;
     } else if (commanderMode === "take-damage") {
       return <View style={styles.takeDamageView}>{takeDamageContent}</View>;
+    } else if(poisonMode){
+      return <View style={styles.dealDamageView}>{poisonView}</View>
     } else {
       return flexViewContent; // Render flexView directly
     }
@@ -211,9 +264,38 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-evenly",
     flexDirection: "row",
+    padding: 8,
+    borderRadius: 5,
+  },
+  topXView: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: 7,
+    borderRadius: 5,
+  },
+  poisonView: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    flexDirection: "row",
+    padding: 6,
+    borderRadius: 5,
+    gap:10,
+  },
+  addDamageView: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    flexDirection: "row",
     padding: 10,
     borderRadius: 5,
-    margin: 5,
+    margin: 3,
+    gap:10,
+  },
+  bigView: {
+
   },
   text: {
     fontSize: 60,
@@ -221,19 +303,23 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   textSmall: {
-    fontSize: 20,
+    fontSize: 15,
     color: "#afafaf",
   },
   button: {
     cursor: "pointer",
   },
+  tinyImg: {
+    width: 18,
+    height: 18,
+  },
   image: {
-    width: 20,
-    height: 20,
+    width: 25,
+    height: 25,
   },
   imageBig: {
-    width: 60,
-    height: 60,
+    width: 45,
+    height: 45,
   },
   dealDamageView: {
     backgroundColor: "white",

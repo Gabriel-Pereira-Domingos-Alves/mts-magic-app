@@ -17,12 +17,13 @@ const PlayerHud_V: React.FC<PlayerHudProps> = ({index, health, rotation, color }
     //transform: [{ rotate: `${rotation}deg` }],
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
     backgroundColor: color,
-    height: "100%",
+    //height: "100%",
   };
   const insideViewStyle: ViewStyle = {
-    width: "100%",
+    //width: "100%",
+    height: "40%",
+    width: "150%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -33,7 +34,7 @@ const PlayerHud_V: React.FC<PlayerHudProps> = ({index, health, rotation, color }
   return (
     <View style={containerStyle}>
       <View style={insideViewStyle}>
-        <PlayerHud_Center index={index} initialHealth={health}/>
+        <PlayerHud_Center rotation={rotation} index={index} initialHealth={health}/>
       </View>
     </View>
   );
