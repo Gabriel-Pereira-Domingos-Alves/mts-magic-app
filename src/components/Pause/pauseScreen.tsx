@@ -5,13 +5,17 @@ import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 interface PauseScreenProps {
   onResume: () => void;
   onReturn: () => void;
+  onReload: () => void;
 }
 
-const PauseScreen: React.FC<PauseScreenProps> = ({ onResume, onReturn }) => {
+const PauseScreen: React.FC<PauseScreenProps> = ({ onResume, onReturn, onReload }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={onResume} style={styles.resumeButton}>
         <Text style={styles.resumeText}>Resume</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={onReload} style={styles.reloadButton}>
+        <Text style={styles.resumeText}>Reload Game</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={onReturn} style={styles.returnButton}>
         <Text style={styles.returnText}>Return to menu</Text>
@@ -40,6 +44,11 @@ const styles = StyleSheet.create({
   returnButton: {
     padding: 10,
     backgroundColor: "black",
+    borderRadius: 5
+  },
+  reloadButton: {
+    padding: 10,
+    backgroundColor: "gray",
     borderRadius: 5
   },
   returnText: {

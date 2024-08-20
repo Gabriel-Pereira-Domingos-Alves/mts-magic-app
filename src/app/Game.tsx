@@ -20,6 +20,7 @@ const Game: React.FC<GameProps> = ({ route, navigation }) => {
   const { playerAmmount, health } = route.params;
   const colors = ['#ff9999', '#99ccff', '#99ff99', '#ffff99'];
   const [isPaused, setIsPaused] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   const handlePause = () => {
     setIsPaused(true);
@@ -31,6 +32,9 @@ const Game: React.FC<GameProps> = ({ route, navigation }) => {
 
   const returnToMenu = () => {
     navigation.navigate('Home');
+  }
+  const resetGame = () => {
+    setResetKey(prevKey => prevKey + 1);
   }
 
   const renderHuds = () => {
@@ -71,13 +75,13 @@ const Game: React.FC<GameProps> = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} key={resetKey}>
       <CommanderProvider>
         {renderHuds()}
       </CommanderProvider>
       <Dice />
       <PauseButton onPause={handlePause} />
-      {isPaused && <PauseScreen onResume={handleResume} onReturn={returnToMenu}/>}
+      {isPaused && <PauseScreen onResume={handleResume} onReturn={returnToMenu} onReload={resetGame}/>}
     </View>
   );
 };
