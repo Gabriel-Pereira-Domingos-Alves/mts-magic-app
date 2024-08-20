@@ -58,8 +58,10 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
   const [displayLimit, setDisplayLimit] = useState(8);
   const [selectedCardDetails, setSelectedCardDetails] = useState<Card | null>(null,);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
+  const [filters, setFilters] = useState(false);
 
   const handleSearchSubmit = async () => {
+    setFilters(false);
     setLoading(true);
     try {
       const fetchedCards = await fetchCardByName(searchQuery);
@@ -72,6 +74,7 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
   };
   
   const applyFilters = async (filters: any) => {
+    setFilters(true);
     setLoading(true);
     try {
       const filterCards = await fetchCards(filters);
@@ -89,14 +92,21 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
   }
 
   const handleCardPress = async (card: Card) => {
-    try {
-      const details = await fetchCardDetails(card.name);
-      setSelectedCardDetails(details);
-      setModalVisible(true);
-    } catch (error) {
-      console.error("Error fetching card details:", error);
+    if (!filters) {
+      try {
+        const details = await fetchCardDetails(card.name);
+        setSelectedCardDetails(details);
+        setModalVisible(true);
+
+      } catch (error) {
+        console.error("Error fetching card details:", error);
+      }
     }
-  };
+    else {
+      setSelectedCardDetails(card);
+      setModalVisible(true);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
