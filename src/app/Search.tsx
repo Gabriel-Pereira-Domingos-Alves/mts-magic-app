@@ -14,6 +14,7 @@ import {
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import styles from "@/styles/searchCard.styles";
 import { fetchCardByName, fetchCardDetails } from "@/api/searchCard";
+import { fetchCards } from "@/api/mtgService";
 import { CardComponent } from "@/components/cardComponent";
 import { StackNavigationProp } from "@react-navigation/stack";
 import CardDetailsModal from "@/components/modalComponent";
@@ -46,7 +47,7 @@ interface Card {
   oracleText: string;
   typeLine: string;
   id: string;
-  synergy?: Synergy[]; // Faça o campo synergy opcional se ele só estiver disponível após detalhes específicos serem buscados
+  synergy?: Synergy[]; 
 }
 
 const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
@@ -70,8 +71,17 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
     }
   };
   
-  const applyFilters = (filters: any) => {
-    setFilterModalVisible(false);
+  const applyFilters = async (filters: any) => {
+    setLoading(true);
+    try {
+      const filterCards = await fetchCards(filters);
+      setCards(filterCards);
+      setFilterModalVisible(false);
+    } catch (error) {
+      console.error("Error fetching cards:", error);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handleLoadMore = () => {
