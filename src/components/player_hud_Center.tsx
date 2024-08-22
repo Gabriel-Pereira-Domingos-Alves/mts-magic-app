@@ -139,24 +139,26 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
       <>
         <View style={styles.addDamageView}>
           <TouchableOpacity style={styles.button} onPress={decrementHealth}>
-            <Text style={styles.text}>-</Text>
+            <Text style={styles.textSignals}>-</Text>
           </TouchableOpacity>
-          <Text style={styles.text}>{shownHealth}</Text>
+          <Text style={rotation === "0" || rotation === "180" ? styles.textBig : styles.text}>{shownHealth}</Text>
           <TouchableOpacity style={styles.button} onPress={incrementHealth}>
-            <Text style={styles.text}>+</Text>
+            <Text style={styles.textSignals}>+</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.addDamageView}>
+        <View style={styles.buttonsView}>
           <TouchableOpacity style={styles.button} onPress={handleCommander}>
             <Image
               source={require("../../assets/images/shield.png")}
-              style={styles.image}
+              style={rotation === "0" || rotation === "180" ? styles.imageBig : styles.mediumImage}
+              resizeMode="contain"
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={handlePoison}>
+          <TouchableOpacity style={styles.button} onPress={handlePoison}>
             <Image
               source={require("../../assets/images/rune.png")}
-              style={styles.image}
+              style={rotation === "0" || rotation === "180" ? styles.imageBig : styles.mediumImage}
+              resizeMode="contain"
             />
           </TouchableOpacity>
         </View>
@@ -183,6 +185,7 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
           <Image
             source={require("../../assets/images/shield.png")}
             style={styles.image}
+            resizeMode="contain"
           />
         </View>
       </>
@@ -196,6 +199,7 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
           <Image
             style={styles.imageBig}
             source={require("../../assets/images/shield.png")}
+            resizeMode="contain"
           />
         </View>
         <View style={styles.flexView}>
@@ -203,6 +207,7 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
             <Image
               style={styles.image}
               source={require("../../assets/images/Red_X.png")}
+              resizeMode="contain"
             />
           </TouchableOpacity>
         </View>
@@ -220,31 +225,32 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
             style={styles.button}
             onPress={() => handlePoisonDamage(-1)}
           >
-            <Text style={styles.text}>-</Text>
+            <Text style={styles.textSignals}>-</Text>
           </TouchableOpacity>
           <Text style={styles.text}>{poisonDamage}</Text>
           <TouchableOpacity
             style={styles.button}
             onPress={() => handlePoisonDamage(1)}
           >
-            <Text style={styles.text}>+</Text>
+            <Text style={styles.textSignals}>+</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.flexView}>
           <Image
             source={require("../../assets/images/rune.png")}
-            style={styles.image}
+            style={styles.mediumImage}
+            resizeMode="contain"
           />
         </View>
       </>
     );
 
     if (commanderMode === "deal-damage") {
-      return <View style={styles.dealDamageView}>{dealDamageContent}</View>;
+      return <View style={styles.takeDamageView}>{dealDamageContent}</View>;
     } else if (commanderMode === "take-damage") {
       return <View style={styles.takeDamageView}>{takeDamageContent}</View>;
     } else if(poisonMode){
-      return <View style={styles.dealDamageView}>{poisonView}</View>
+      return <View style={styles.takeDamageView}>{poisonView}</View>
     } else {
       return flexViewContent; // Render flexView directly
     }
@@ -257,14 +263,18 @@ const styles = StyleSheet.create({
   parentView: {
     display: "flex",
     borderRadius: 12,
-    //width: "80%",
+    width: "100%",
+    borderBottomColor: "blue",
+  },
+  fullWidth: {
+    width: "100%",
+    height: "100%",
   },
   flexView: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-evenly",
     flexDirection: "row",
-    padding: 8,
     borderRadius: 5,
   },
   topXView: {
@@ -272,7 +282,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",
-    padding: 7,
     borderRadius: 5,
   },
   poisonView: {
@@ -280,31 +289,44 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-evenly",
     flexDirection: "row",
-    padding: 6,
     borderRadius: 5,
-    gap:10,
+    gap:5,
   },
   addDamageView: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-evenly",
     flexDirection: "row",
-    padding: 10,
     borderRadius: 5,
     margin: 3,
-    gap:10,
+    gap:55,
   },
-  bigView: {
-
+  buttonsView: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    flexDirection: "row",
+    borderRadius: 5,
+    margin: 3,
   },
   text: {
-    fontSize: 60,
-    color: "#333",
+    fontSize: 80,
+    color: "#000000",
+    fontWeight: "bold",
+  },
+  textSignals: {
+    fontSize: 45,
+    color: "#000000",
     fontWeight: "bold",
   },
   textSmall: {
     fontSize: 15,
     color: "#afafaf",
+  },
+  textBig: {
+    fontSize: 115,
+    color: "#000000",
+    fontWeight: "bold",
   },
   button: {
     cursor: "pointer",
@@ -314,17 +336,16 @@ const styles = StyleSheet.create({
     height: 18,
   },
   image: {
-    width: 25,
-    height: 25,
+    width: 17,
+    height: 17,
+  },
+  mediumImage: {
+    width: 40,
+    height: 40,
   },
   imageBig: {
-    width: 45,
-    height: 45,
-  },
-  dealDamageView: {
-    backgroundColor: "white",
-    borderRadius: 5,
-    margin: 5,
+    width: 65,
+    height: 65,
   },
   takeDamageView: {
     backgroundColor: "rgb(255, 255, 255)",

@@ -11,7 +11,7 @@ const PauseButton: React.FC<PauseButtonProps> = ({ onPause }) => {
     <View style={styles.container}>
       <TouchableOpacity onPress={onPause}>
         <ImageBackground
-          source={require('../../../assets/images/pause-button.png')}
+          source={require('../../../assets/images/config.png')}
           style={styles.button}
         />
       </TouchableOpacity>
@@ -22,15 +22,16 @@ const PauseButton: React.FC<PauseButtonProps> = ({ onPause }) => {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: 50, // Espaçamento a partir do topo
-    left: 0,
-    right: 0,
+    top: 0,
+    bottom: 0,
+    left: 30,
+    //right: 0,
     justifyContent: 'center',
     alignItems: 'center',
   },
   button: {
-    width: 50, // Largura do botão
-    height: 50, // Altura do botão
+    width: 35, // Largura do botão
+    height: 35, // Altura do botão
   },
 });
 

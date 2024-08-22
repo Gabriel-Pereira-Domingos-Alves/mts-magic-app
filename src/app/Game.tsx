@@ -52,7 +52,7 @@ const Game: React.FC<GameProps> = ({ route, navigation }) => {
             <PlayerHud_V key={3} index={3} health={health} rotation='90' color={colors[3]}/>
             <PlayerHud_V key={2} index={2} health={health} rotation='-90' color={colors[2]}/>
           </View>
-        <PlayerHud_H key={1} index={1} health={health} flex={1} color={colors[0]}/>
+        <PlayerHud_H key={1} index={1} health={health} flex={0.916} color={colors[0]}/>
         </>
       );
     } else if (playerAmmount === 4) {

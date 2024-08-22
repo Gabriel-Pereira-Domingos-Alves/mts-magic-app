@@ -12,6 +12,16 @@ interface PlayerHudProps {
 
 const PlayerHud_V: React.FC<PlayerHudProps> = ({index, health, rotation, color }) => {
 
+  const containerStyleBorder: ViewStyle = {
+    flex: 1,
+    //transform: [{ rotate: `${rotation}deg` }],
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: color,
+    borderLeftWidth: 9,
+    borderLeftColor: "#7c7878",
+    //height: "100%",
+  };
   const containerStyle: ViewStyle = {
     flex: 1,
     //transform: [{ rotate: `${rotation}deg` }],
@@ -32,7 +42,7 @@ const PlayerHud_V: React.FC<PlayerHudProps> = ({index, health, rotation, color }
   }
 
   return (
-    <View style={containerStyle}>
+    <View style={rotation === "90" ? containerStyle : containerStyleBorder}>
       <View style={insideViewStyle}>
         <PlayerHud_Center rotation={rotation} index={index} initialHealth={health}/>
       </View>
@@ -40,11 +50,6 @@ const PlayerHud_V: React.FC<PlayerHudProps> = ({index, health, rotation, color }
   );
 };
 
-const styles = StyleSheet.create({
-  text: {
-    fontSize: 18,
-    color: '#333',
-  },
-});
+
 
 export default PlayerHud_V;

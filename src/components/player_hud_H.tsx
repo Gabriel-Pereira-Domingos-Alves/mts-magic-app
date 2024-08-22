@@ -1,5 +1,5 @@
 // src/components/PlayerHud_H.tsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
 import PlayerHud_Center from './player_hud_Center';
 
@@ -11,12 +11,19 @@ interface PlayerHudProps {
 }
 
 const PlayerHud_H: React.FC<PlayerHudProps> = ({ index, health, flex, color }) => {
-  let rotation = "";
-  if(index === 1) {
-    rotation = "0";
-  } else if(index === 2){
-    rotation = "180";
-  }
+  const rotation = index === 1 ? "0" : "180";
+
+  const containerStyleBorder: ViewStyle = {
+    flex: flex,
+    transform: [{ rotate: `${rotation}deg` }],
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: color,
+    width: "100%",
+    borderTopColor: "#7c7878",
+    borderTopWidth: 9,
+  };
   const containerStyle: ViewStyle = {
     flex: flex,
     transform: [{ rotate: `${rotation}deg` }],
@@ -27,9 +34,10 @@ const PlayerHud_H: React.FC<PlayerHudProps> = ({ index, health, flex, color }) =
     width: "100%",
   };
 
+
   return (
-    <View style={containerStyle}>
-      <PlayerHud_Center index={index} initialHealth={health} />
+    <View style={rotation === "0" ? containerStyleBorder : containerStyle}>
+      <PlayerHud_Center rotation={rotation} index={index} initialHealth={health} />
     </View>
   );
 };
