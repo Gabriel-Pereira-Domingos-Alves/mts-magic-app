@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useCommander } from "./commanderContext";
+import styles from './player_hud_Center.styles';
+
 
 interface PlayerHudProps {
   index: number;
@@ -165,39 +167,39 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
       </>
     );
     const dealDamageContent = (
-      <>
+      <View style={styles.dealDamageContent}>
         <View style={styles.addDamageView}>
           <TouchableOpacity
             style={styles.button}
             onPress={() => handleCommanderDamage(-1)}
           >
-            <Text style={styles.text}>-</Text>
+            <Text style={styles.textSignals}>-</Text>
           </TouchableOpacity>
-          <Text style={styles.text}>{currentCommanderDamage}</Text>
+          <Text style={rotation === "0" || rotation === "180" ? styles.textBig : styles.text}>{currentCommanderDamage}</Text>
           <TouchableOpacity
             style={styles.button}
             onPress={() => handleCommanderDamage(1)}
           >
-            <Text style={styles.text}>+</Text>
+            <Text style={styles.textSignals}>+</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.addDamageView}>
           <Image
             source={require("../../assets/images/shield.png")}
-            style={styles.image}
+            style={rotation === "0" || rotation === "180" ? styles.imageBig : styles.shieldDamage}
             resizeMode="contain"
           />
         </View>
-      </>
+      </View>
     );
     const takeDamageContent = (
-      <>
+      <View style={styles.takeDamageContent}>
         <View style={styles.flexView}>
-          <Text style={styles.textSmall}> commander damage</Text>
+          <Text style={rotation === "0" || rotation === "180" ? styles.textTitleNormal : styles.textSmall}> commander damage</Text>
         </View>
         <View style={styles.flexView}>
           <Image
-            style={styles.imageBig}
+            style={rotation === "0" || rotation === "180" ? styles.imageSuperBig : styles.imageBig}
             source={require("../../assets/images/shield.png")}
             resizeMode="contain"
           />
@@ -205,21 +207,21 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
         <View style={styles.flexView}>
           <TouchableOpacity style={styles.button} onPress={handleCommander}>
             <Image
-              style={styles.image}
+              style={rotation === "0" || rotation === "180" ? styles.shieldDamage : styles.image}
               source={require("../../assets/images/Red_X.png")}
               resizeMode="contain"
             />
           </TouchableOpacity>
         </View>
-      </>
+      </View>
     );
     const poisonView = (
-      <>
-      <View style={styles.topXView}>
-        <TouchableOpacity onPress={handlePoison}>
-          <Image style={styles.tinyImg} source={require("../../assets/images/Red_X.png")}></Image>
-        </TouchableOpacity>
-      </View>
+      <View style={styles.takeDamageContent}>
+        <View style={styles.topXView}>
+          <TouchableOpacity onPress={handlePoison}>
+            <Image style={rotation === "0" || rotation === "180" ? styles.xImage : styles.tinyImg} source={require("../../assets/images/Red_X.png")}></Image>
+          </TouchableOpacity>
+        </View>
         <View style={styles.poisonView}>
           <TouchableOpacity
             style={styles.button}
@@ -227,7 +229,7 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
           >
             <Text style={styles.textSignals}>-</Text>
           </TouchableOpacity>
-          <Text style={styles.text}>{poisonDamage}</Text>
+          <Text style={rotation === "0" || rotation === "180" ? styles.textBig : styles.text}>{poisonDamage}</Text>
           <TouchableOpacity
             style={styles.button}
             onPress={() => handlePoisonDamage(1)}
@@ -238,19 +240,19 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
         <View style={styles.flexView}>
           <Image
             source={require("../../assets/images/rune.png")}
-            style={styles.mediumImage}
+            style={rotation === "0" || rotation === "180" ? styles.imageBig : styles.shieldDamage}
             resizeMode="contain"
           />
         </View>
-      </>
+      </View>
     );
 
     if (commanderMode === "deal-damage") {
-      return <View style={styles.takeDamageView}>{dealDamageContent}</View>;
+      return <View style={rotation === "0" || rotation === "180" ? styles.takeDamageViewBig : styles.takeDamageView}>{dealDamageContent}</View>;
     } else if (commanderMode === "take-damage") {
-      return <View style={styles.takeDamageView}>{takeDamageContent}</View>;
+      return <View style={rotation === "0" || rotation === "180" ? styles.takeDamageViewBig : styles.takeDamageView}>{takeDamageContent}</View>;
     } else if(poisonMode){
-      return <View style={styles.takeDamageView}>{poisonView}</View>
+      return <View style={rotation === "0" || rotation === "180" ? styles.takeDamageViewBig : styles.takeDamageView}>{poisonView}</View>
     } else {
       return flexViewContent; // Render flexView directly
     }
@@ -258,100 +260,5 @@ const PlayerHud_Center: React.FC<PlayerHudProps> = ({
 
   return <View style={styles.parentView}>{renderCommanderWrapper()}</View>;
 };
-
-const styles = StyleSheet.create({
-  parentView: {
-    display: "flex",
-    borderRadius: 12,
-    width: "100%",
-    borderBottomColor: "blue",
-  },
-  fullWidth: {
-    width: "100%",
-    height: "100%",
-  },
-  flexView: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-evenly",
-    flexDirection: "row",
-    borderRadius: 5,
-  },
-  topXView: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    borderRadius: 5,
-  },
-  poisonView: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-evenly",
-    flexDirection: "row",
-    borderRadius: 5,
-    gap:5,
-  },
-  addDamageView: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-evenly",
-    flexDirection: "row",
-    borderRadius: 5,
-    margin: 3,
-    gap:55,
-  },
-  buttonsView: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-evenly",
-    flexDirection: "row",
-    borderRadius: 5,
-    margin: 3,
-  },
-  text: {
-    fontSize: 80,
-    color: "#000000",
-    fontWeight: "bold",
-  },
-  textSignals: {
-    fontSize: 45,
-    color: "#000000",
-    fontWeight: "bold",
-  },
-  textSmall: {
-    fontSize: 15,
-    color: "#afafaf",
-  },
-  textBig: {
-    fontSize: 115,
-    color: "#000000",
-    fontWeight: "bold",
-  },
-  button: {
-    cursor: "pointer",
-  },
-  tinyImg: {
-    width: 18,
-    height: 18,
-  },
-  image: {
-    width: 17,
-    height: 17,
-  },
-  mediumImage: {
-    width: 40,
-    height: 40,
-  },
-  imageBig: {
-    width: 65,
-    height: 65,
-  },
-  takeDamageView: {
-    backgroundColor: "rgb(255, 255, 255)",
-    borderRadius: 12,
-    width: "100%",
-  },
-});
 
 export default PlayerHud_Center;
