@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     //right: 0,
     justifyContent: 'center',
     alignItems: 'center',
+    pointerEvents: "box-none",
   },
   button: {
     width: 35, // Largura do botão
