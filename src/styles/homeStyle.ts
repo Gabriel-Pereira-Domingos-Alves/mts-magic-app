@@ -96,4 +96,7 @@ export default StyleSheet.create({
       fontWeight: "bold",
       fontFamily: "Body Base",
     },
+    disabledButton: {
+      opacity: 0.5,
+    },
   });

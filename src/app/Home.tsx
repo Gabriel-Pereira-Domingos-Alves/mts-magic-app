@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, Text, View, TouchableOpacity, Image, ImageBackground } from 'react-native';
 import styles from '@/styles/homeStyle';
 import { StackNavigationProp } from '@react-navigation/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type RootStackParamList = {
   Home: undefined;
-  Game: { health: number; playerAmmount: number };
+  Game: { health?: number; playerAmmount?: number };
   SearchCard: undefined;
 };
 
@@ -16,6 +17,21 @@ type HomeProps = {
 export default function HomeScreen({ navigation }: HomeProps) {
   const [playerCount, setPlayerCount] = useState(2);
   const [initialLife, setInitialLife] = useState(20);
+  const [isContinueDisabled, setIsContinueDisabled] = useState(true);
+
+  useEffect(() => {
+    // Checa se a tela Game está na pilha
+    const state = navigation.getState();
+    const gameInStack = state.routes.some(route => route.name === 'Game');
+    setIsContinueDisabled(!gameInStack);
+  }, [navigation]);
+
+  const startNewGame = () => {
+    navigation.push('Game', { health: initialLife, playerAmmount: playerCount });
+  };
+  const continueGame = () => {
+     navigation.goBack();
+  };
 
   const handlePlayerCountChange = (value: number) => {
     setPlayerCount(prevCount => {
@@ -50,8 +66,14 @@ export default function HomeScreen({ navigation }: HomeProps) {
               <Text style={styles.buttonText}>+</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('Game', { health: initialLife, playerAmmount: playerCount })} style={styles.startButton}>
+          <TouchableOpacity onPress={startNewGame} style={styles.startButton}>
             <Text style={styles.startButtonText}>Start Game</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.startButton, isContinueDisabled && styles.disabledButton]}
+           onPress={continueGame}
+           disabled={isContinueDisabled}
+           >
+            <Text style={styles.startButtonText}>Continue Game</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('SearchCard')} style={styles.searchButton}>
             <Text style={styles.searchButtonText}>Search Card</Text>

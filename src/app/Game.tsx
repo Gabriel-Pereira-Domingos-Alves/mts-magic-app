@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import PlayerHud_H from '@/components/player_hud_H';
 import PlayerHud_V from '@/components/player_hud_V';
 import styles from '@/styles/game.styles';
@@ -17,10 +18,23 @@ type GameProps = {
   };
 
 const Game: React.FC<GameProps> = ({ route, navigation }) => {
-  const { playerAmmount, health } = route.params;
+  const { playerAmmount, health } = route.params || {};
   const colors = ['#ff9999', '#8699D8', '#86D8BE', '#CFC980'];
   const [isPaused, setIsPaused] = useState(false);
   const [resetKey, setResetKey] = useState(0);
+
+  // useEffect(() => {
+  //   const loadGameState = async () => {
+  //     const savedState = await AsyncStorage.getItem('gameState');
+  //     if (savedState) {
+  //       const parsedState = JSON.parse(savedState);
+  //       setIsPaused(parsedState.isPaused);
+  //       setResetKey(parsedState.resetKey);
+  //     }
+  //   };
+
+  //   loadGameState();
+  // }, []);
 
   const handlePause = () => {
     setIsPaused(true);
@@ -30,8 +44,14 @@ const Game: React.FC<GameProps> = ({ route, navigation }) => {
     setIsPaused(false);
   };
 
-  const returnToMenu = () => {
-    navigation.navigate('Home');
+  const returnToMenu = async () => {
+    const gameState = {
+      isPaused,
+      resetKey,
+      // Salve outros estados necessários
+    };
+    await AsyncStorage.setItem('gameState', JSON.stringify(gameState));
+    navigation.push('Home');
   }
   const resetGame = () => {
     setResetKey(prevKey => prevKey + 1);

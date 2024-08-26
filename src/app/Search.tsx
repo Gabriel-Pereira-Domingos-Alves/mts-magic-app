@@ -112,7 +112,7 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ navigation }) => {
     <SafeAreaView style={styles.safeAreaContainer}>
       <View style={styles.someContent}>
         <View style={styles.searchContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate("Home")} style={styles.backButton}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <AntDesign name="leftcircle" style={styles.backButtonIcon}  />
           </TouchableOpacity>
           <TextInput
