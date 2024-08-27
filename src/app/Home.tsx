@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { SafeAreaView, Text, View, TouchableOpacity, Image, ImageBackground } from 'react-native';
 import styles from '@/styles/homeStyle';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { BannerAdSize, BannerAd, TestIds } from 'react-native-google-mobile-ads';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type RootStackParamList = {
@@ -16,9 +15,6 @@ type HomeProps = {
 };
 
 export default function HomeScreen({ navigation }: HomeProps) {
-  const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-4493739892514345~6609412125';
-
-
   const [playerCount, setPlayerCount] = useState(2);
   const [initialLife, setInitialLife] = useState(20);
   const [isContinueDisabled, setIsContinueDisabled] = useState(true);
@@ -82,19 +78,6 @@ export default function HomeScreen({ navigation }: HomeProps) {
           <TouchableOpacity onPress={() => navigation.navigate('SearchCard')} style={styles.searchButton}>
             <Text style={styles.searchButtonText}>Search Card</Text>
           </TouchableOpacity>
-          <BannerAd
-            unitId={adUnitId}
-            size={BannerAdSize.FULL_BANNER}
-            requestOptions={{
-              requestNonPersonalizedAdsOnly: true,
-            }}
-            onAdLoaded={() => {
-              console.log('Anúncio carregado');
-            }}
-            onAdFailedToLoad={(error) => {
-              console.error('Falha ao carregar o anúncio:', error);
-            }}
-          />
         </View>
       </ImageBackground>
     </SafeAreaView>
